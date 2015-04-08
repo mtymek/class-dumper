@@ -13,5 +13,16 @@
             "name": "Mateusz Tymek",
             "email": "mtymek@gmail.com"
         }
-    ]
+    ],
+    "autoload": {
+        "psr-4": {
+            "ClassCacher\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ClassCacherTest\\": "test/ClassCacherTest",
+            "UserLib\\": "test/data/UserLib"
+        }
+    }
 }
