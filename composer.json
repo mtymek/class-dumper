@@ -1,0 +1,17 @@
+{
+    "name": "mtymek/class-cacher",
+    "description": "Generate single file containing multiple classes, to speed up application bootstrap.",
+    "require": {
+        "zendframework/zend-code": "~2.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.6"
+    },
+    "license": "BSD-2-Clause",
+    "authors": [
+        {
+            "name": "Mateusz Tymek",
+            "email": "mtymek@gmail.com"
+        }
+    ]
+}
