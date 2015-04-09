@@ -7,6 +7,7 @@ use PHPUnit_Framework_TestCase;
 use UserLib\Admin\SuperAdmin;
 use UserLib\Customer\Customer;
 use UserLib\Customer\CustomerInterface;
+use UserLib\Exception\RuntimeException;
 use UserLib\Product\ProductInterface;
 use Zend\Code\Reflection\ClassReflection;
 
@@ -53,6 +54,10 @@ class CodeGeneratorTest extends PHPUnit_Framework_TestCase
                 SuperAdmin::class,
                 'class SuperAdmin extends Admin implements SuperAdminInterface',
             ],
+            'fcqn' => [
+                RuntimeException::class,
+                'class RuntimeException extends \RuntimeException',
+            ]
         ];
     }
 

@@ -36,6 +36,24 @@ class CodeGenerator
         return $useLines;
     }
 
+    /**
+     * @param ClassReflection $class
+     * @param string $namespaceName
+     * @param array $useArray
+     * @return string
+     */
+    private function getClassNameInContext(ClassReflection $class, $namespaceName, $useArray)
+    {
+        if (!$namespaceName) {
+            return '\\' . $class->getName();
+        }
+        return array_key_exists($class->getName(), $useArray)
+            ? ($useArray[$class->getName()] ?: $class->getShortName())
+            : ((0 === strpos($class->getName(), $namespaceName))
+                ? substr($class->getName(), strlen($namespaceName) + 1)
+                : '\\' . $class->getName());
+    }
+
     public function getDeclarationLine(ClassReflection $r)
     {
         $usesNames = $this->getUseArray($r);
@@ -56,14 +74,8 @@ class CodeGenerator
         }
         $declaration .= $r->getShortName();
         $parentName = false;
-        if (($parent = $r->getParentClass()) && $r->getNamespaceName()) {
-            $parentName   = array_key_exists($parent->getName(), $usesNames)
-                ? ($usesNames[$parent->getName()] ?: $parent->getShortName())
-                : ((0 === strpos($parent->getName(), $r->getNamespaceName()))
-                    ? substr($parent->getName(), strlen($r->getNamespaceName()) + 1)
-                    : '\\' . $parent->getName());
-        } else if ($parent && !$r->getNamespaceName()) {
-            $parentName = '\\' . $parent->getName();
+        if ($parent = $r->getParentClass()) {
+            $parentName = $this->getClassNameInContext($parent, $r->getNamespaceName(), $usesNames);
         }
         if ($parentName) {
             $declaration .= " extends {$parentName}";
@@ -77,11 +89,7 @@ class CodeGenerator
             $declaration .= $r->isInterface() ? ' extends ' : ' implements ';
             $declaration .= implode(', ', array_map(function($interface) use ($usesNames, $r) {
                 $iReflection = new ClassReflection($interface);
-                return (array_key_exists($iReflection->getName(), $usesNames)
-                    ? ($usesNames[$iReflection->getName()] ?: $iReflection->getShortName())
-                    : ((0 === strpos($iReflection->getName(), $r->getNamespaceName()))
-                        ? substr($iReflection->getName(), strlen($r->getNamespaceName()) + 1)
-                        : '\\' . $iReflection->getName()));
+                return $this->getClassNameInContext($iReflection, $r->getNamespaceName(), $usesNames);
             }, $interfaces));
         }
 
