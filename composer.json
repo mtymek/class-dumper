@@ -1,6 +1,6 @@
 {
-    "name": "mtymek/class-cacher",
-    "description": "Generate single file containing multiple classes, to speed up application bootstrap.",
+    "name": "mtymek/class-dumper",
+    "description": "Creates single file containing multiple classes, to speed up application bootstrap.",
     "require": {
         "zendframework/zend-code": "~2.4"
     },
