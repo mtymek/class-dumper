@@ -1,19 +1,19 @@
 <?php
 
-namespace ClassCacherTest;
+namespace ClassDumperTest;
 
-use ClassCacher\ClassCacher;
+use ClassDumper\ClassDumper;
 use PHPUnit_Framework_TestCase;
 use UserLib\Admin\Admin;
 use UserLib\Customer\Customer;
 use UserLib\Product\ProductInterface;
 use UserLib\UserInterface;
 
-class ClassCacherTest extends PHPUnit_Framework_TestCase
+class ClassDumperTest extends PHPUnit_Framework_TestCase
 {
     public function testGenerateCache()
     {
-        $cacher = new ClassCacher();
+        $dumper = new ClassDumper();
 
         $classes = [
             UserInterface::class,
@@ -22,7 +22,7 @@ class ClassCacherTest extends PHPUnit_Framework_TestCase
             Customer::class,
         ];
 
-        $cache = $cacher->generateCache($classes);
+        $cache = $dumper->generateCache($classes);
 
         $this->assertEquals('namespace UserLib {
 interface UserInterface

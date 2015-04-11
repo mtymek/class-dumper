@@ -1,8 +1,8 @@
 <?php
 
-namespace ClassCacherTest;
+namespace ClassDumperTest;
 
-use ClassCacher\CodeGenerator;
+use ClassDumper\CodeGenerator;
 use PHPUnit_Framework_TestCase;
 use UserLib\Admin\SuperAdmin;
 use UserLib\Customer\Customer;

@@ -1,10 +1,10 @@
 <?php
 
-namespace ClassCacher;
+namespace ClassDumper;
 
 use Zend\Code\Reflection\ClassReflection;
 
-class ClassCacher
+class ClassDumper
 {
     /**
      * @var CodeGenerator

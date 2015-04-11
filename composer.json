@@ -16,12 +16,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "ClassCacher\\": "src"
+            "ClassDumper\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ClassCacherTest\\": "test/ClassCacherTest",
+            "ClassDumperTest\\": "test/ClassDumperTest",
             "UserLib\\": "test/data/UserLib"
         }
     }

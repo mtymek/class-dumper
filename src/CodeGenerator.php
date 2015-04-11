@@ -1,6 +1,6 @@
 <?php
 
-namespace ClassCacher;
+namespace ClassDumper;
 
 use Zend\Code\Reflection\ClassReflection;
 
