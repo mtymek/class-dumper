@@ -5,13 +5,14 @@ namespace ClassDumperTest;
 use ClassDumper\ClassDumper;
 use PHPUnit_Framework_TestCase;
 use UserLib\Admin\Admin;
+use UserLib\Admin\SuperAdmin;
 use UserLib\Customer\Customer;
 use UserLib\Product\ProductInterface;
 use UserLib\UserInterface;
 
 class ClassDumperTest extends PHPUnit_Framework_TestCase
 {
-    public function testGenerateCache()
+    public function testDumpCreatesMergedClasses()
     {
         $dumper = new ClassDumper();
 
@@ -22,7 +23,7 @@ class ClassDumperTest extends PHPUnit_Framework_TestCase
             Customer::class,
         ];
 
-        $cache = $dumper->generateCache($classes);
+        $cache = $dumper->dump($classes);
 
         $this->assertEquals('namespace UserLib {
 interface UserInterface
@@ -31,7 +32,8 @@ interface UserInterface
 }
 
 namespace UserLib\Admin {
-use UserLib\UserInterface;class Admin implements UserInterface
+use UserLib\UserInterface;
+class Admin implements UserInterface
 {
 }
 }
@@ -45,8 +47,20 @@ interface ProductInterface
 
 namespace UserLib\Customer {
 use UserLib\Admin\Admin;
+use UserLib\Product\ProductInterface as Product;
+interface CustomerInterface
+{
+    public function buy(Product $product);
+
+    public function sendMessageToAdmin(Admin $admin);
+}
+}
+
+namespace UserLib\Customer {
+use UserLib\Admin\Admin;
 use UserLib\UserInterface;
-use UserLib\Product\ProductInterface;class Customer implements CustomerInterface, UserInterface
+use UserLib\Product\ProductInterface;
+class Customer implements CustomerInterface, UserInterface
 {
     public function buy(ProductInterface $product)
     {
@@ -57,7 +71,43 @@ use UserLib\Product\ProductInterface;class Customer implements CustomerInterface
     }
 }
 }
+', $cache);
+    }
 
+    public function testDumpIncludesRequiredInterfacesAndParentClasses()
+    {
+        $dumper = new ClassDumper();
+
+        $classes = [
+            SuperAdmin::class,
+        ];
+
+        $cache = $dumper->dump($classes);
+
+        $this->assertEquals('namespace UserLib {
+interface UserInterface
+{
+}
+}
+
+namespace UserLib\Admin {
+use UserLib\UserInterface;
+class Admin implements UserInterface
+{
+}
+}
+
+namespace UserLib\Admin {
+interface SuperAdminInterface
+{
+}
+}
+
+namespace UserLib\Admin {
+class SuperAdmin extends Admin implements SuperAdminInterface
+{
+}
+}
 ', $cache);
     }
 }

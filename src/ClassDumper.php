@@ -11,30 +11,55 @@ class ClassDumper
      */
     private $codeGenerator;
 
+    private $cache;
+
+    private $cachedClasses;
+
     public function __construct()
     {
         $this->codeGenerator = new CodeGenerator();
     }
 
-    public function generateCache(array $classes)
+    private function dumpClass(ClassReflection $class)
     {
-        $return = '';
-        foreach ($classes as $className) {
-            $class = new ClassReflection($className);
-
-            $classContents = $class->getContents(false);
-            $classFileDir  = dirname($class->getFileName());
-            $classContents = trim(str_replace('__DIR__', sprintf("'%s'", $classFileDir), $classContents));
-
-            $return .= "namespace "
-                . $class->getNamespaceName()
-                . " {\n"
-                . implode("\n", $this->codeGenerator->getUseLines($class))
-                . $this->codeGenerator->getDeclarationLine($class) . "\n"
-                . $classContents
-                . "\n}\n\n";
+        if (array_search($class->getName(), $this->cachedClasses) !== false) {
+            return;
         }
 
-        return $return;
+        if ($class->getParentClass()) {
+            $this->dumpClass($class->getParentClass());
+        }
+
+        foreach ($class->getInterfaces() as $interface) {
+            $this->dumpClass($interface);
+        }
+
+        $classContents = $class->getContents(false);
+        $classFileDir  = dirname($class->getFileName());
+        $classContents = trim(str_replace('__DIR__', sprintf("'%s'", $classFileDir), $classContents));
+
+        $uses = implode("\n", $this->codeGenerator->getUseLines($class));
+
+        $this->cache[] = "namespace "
+            . $class->getNamespaceName()
+            . " {\n"
+            . ($uses ? $uses . "\n" : '')
+            . $this->codeGenerator->getDeclarationLine($class) . "\n"
+            . $classContents
+            . "\n}\n";
+        $this->cachedClasses[] = $class->getName();
+    }
+
+    public function dump(array $classes)
+    {
+        $this->cache = [];
+        $this->cachedClasses = [];
+
+        foreach ($classes as $className) {
+            $class = new ClassReflection($className);
+            $this->dumpClass($class);
+        }
+
+        return implode("\n", $this->cache);
     }
 }
