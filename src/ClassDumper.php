@@ -34,6 +34,12 @@ class ClassDumper
             $this->dumpClass($interface);
         }
 
+        if ($class->getTraits()) {
+            foreach ($class->getTraits() as $trait) {
+                $this->dumpClass($trait);
+            }
+        }
+
         $classContents = $class->getContents(false);
         $classFileDir  = dirname($class->getFileName());
         $classContents = trim(str_replace('__DIR__', sprintf("'%s'", $classFileDir), $classContents));

@@ -59,7 +59,7 @@ class CodeGenerator
         $usesNames = $this->getUseArray($r);
 
         $declaration = '';
-        if ($r->isAbstract() && !$r->isInterface()) {
+        if ($r->isAbstract() && !$r->isInterface() && !$r->isTrait()) {
             $declaration .= 'abstract ';
         }
         if ($r->isFinal()) {

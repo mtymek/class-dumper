@@ -7,6 +7,7 @@ use PHPUnit_Framework_TestCase;
 use UserLib\Admin\Admin;
 use UserLib\Admin\SuperAdmin;
 use UserLib\Customer\Customer;
+use UserLib\Product\Phone;
 use UserLib\Product\ProductInterface;
 use UserLib\UserInterface;
 
@@ -106,6 +107,45 @@ interface SuperAdminInterface
 namespace UserLib\Admin {
 class SuperAdmin extends Admin implements SuperAdminInterface
 {
+}
+}
+', $cache);
+    }
+
+    public function testDumpIncludesRequiredTraits()
+    {
+        $dumper = new ClassDumper();
+
+        $classes = [
+            Phone::class,
+        ];
+
+        $cache = $dumper->dump($classes);
+        $this->assertEquals('namespace UserLib\Product {
+interface ProductInterface
+{
+    public function getName();
+}
+}
+
+namespace UserLib\Product {
+trait GpsTrait
+{
+    public function locate()
+    {
+    }
+}
+}
+
+namespace UserLib\Product {
+class Phone implements ProductInterface
+{
+    use GpsTrait;
+
+    public function getName()
+    {
+        return \'phone\';
+    }
 }
 }
 ', $cache);

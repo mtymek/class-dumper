@@ -17,6 +17,5 @@ $cache = $dumper->dump([
 TODO
 ----
 
-* handle traits
 * strip whitespace
 * fix `__DIR__` constants
