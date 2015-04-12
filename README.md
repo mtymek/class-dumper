@@ -12,6 +12,7 @@ $cache = $dumper->dump([
     Foo::class,
     Bar::class,
 ]);
+file_put_contents('data/cache/class_cache', $cache);
 ```
 
 TODO
