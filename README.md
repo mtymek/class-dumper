@@ -12,11 +12,13 @@ $cache = $dumper->dump([
     Foo::class,
     Bar::class,
 ]);
-file_put_contents('data/cache/class_cache', $cache);
+file_put_contents('data/cache/class_cache', "<?php\n" . $cache);
 ```
 
 TODO
 ----
 
+* throw exception when class does not exist
 * strip whitespace
 * fix `__DIR__` constants
+* console tool
