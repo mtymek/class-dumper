@@ -2,6 +2,7 @@
     "name": "mtymek/class-dumper",
     "description": "Creates single file containing multiple classes, to speed up application bootstrap.",
     "require": {
+        "php": "~5.5",
         "zendframework/zend-code": "~2.4"
     },
     "require-dev": {
