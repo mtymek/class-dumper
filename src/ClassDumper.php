@@ -40,6 +40,10 @@ class ClassDumper
             return;
         }
 
+        if ($class->isInternal()) {
+            return;
+        }
+
         if ($class->getParentClass()) {
             $this->dumpClass($class->getParentClass());
         }

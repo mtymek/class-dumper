@@ -7,6 +7,7 @@ use PHPUnit_Framework_TestCase;
 use UserLib\Admin\Admin;
 use UserLib\Admin\SuperAdmin;
 use UserLib\Customer\Customer;
+use UserLib\Exception\RuntimeException;
 use UserLib\Product\Phone;
 use UserLib\Product\ProductInterface;
 use UserLib\UserInterface;
@@ -16,16 +17,13 @@ class ClassDumperTest extends PHPUnit_Framework_TestCase
     public function testDumpCreatesMergedClasses()
     {
         $dumper = new ClassDumper();
-
         $classes = [
             UserInterface::class,
             Admin::class,
             ProductInterface::class,
             Customer::class,
         ];
-
         $cache = $dumper->dump($classes);
-
         $this->assertEquals('namespace UserLib {
 interface UserInterface
 {
@@ -78,13 +76,10 @@ class Customer implements CustomerInterface, UserInterface
     public function testDumpIncludesRequiredInterfacesAndParentClasses()
     {
         $dumper = new ClassDumper();
-
         $classes = [
             SuperAdmin::class,
         ];
-
         $cache = $dumper->dump($classes);
-
         $this->assertEquals('namespace UserLib {
 interface UserInterface
 {
@@ -115,11 +110,9 @@ class SuperAdmin extends Admin implements SuperAdminInterface
     public function testDumpIncludesRequiredTraits()
     {
         $dumper = new ClassDumper();
-
         $classes = [
             Phone::class,
         ];
-
         $cache = $dumper->dump($classes);
         $this->assertEquals('namespace UserLib\Product {
 interface ProductInterface
@@ -146,6 +139,21 @@ class Phone implements ProductInterface
     {
         return \'phone\';
     }
+}
+}
+', $cache);
+    }
+
+    public function testDumpSkipsInternalClasses()
+    {
+        $dumper = new ClassDumper();
+        $classes = [
+            RuntimeException::class,
+        ];
+        $cache = $dumper->dump($classes);
+        $this->assertEquals('namespace UserLib\Exception {
+class RuntimeException extends \RuntimeException
+{
 }
 }
 ', $cache);
