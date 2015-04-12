@@ -7,26 +7,26 @@ use Zend\Code\Reflection\ClassReflection;
 class CodeGenerator
 {
     /**
-     * @param ClassReflection $r
+     * @param ClassReflection $class
      * @return array
      */
-    private function getUseArray(ClassReflection $r)
+    private function getUseArray(ClassReflection $class)
     {
         $usesNames = [];
-        foreach ($r->getDeclaringFile()->getUses() as $use) {
+        foreach ($class->getDeclaringFile()->getUses() as $use) {
             $usesNames[$use['use']] = $use['as'];
         }
         return $usesNames;
     }
 
     /**
-     * @param ClassReflection $r
+     * @param ClassReflection $class
      * @return string
      */
-    public function getUseLines(ClassReflection $r)
+    public function getUseLines(ClassReflection $class)
     {
         $useLines = [];
-        foreach ($this->getUseArray($r) as $name => $as) {
+        foreach ($this->getUseArray($class) as $name => $as) {
             $useString = "use $name";
             if ($as) {
                 $useString .= " as $as";
@@ -54,42 +54,46 @@ class CodeGenerator
                 : '\\' . $class->getName());
     }
 
-    public function getDeclarationLine(ClassReflection $r)
+    /**
+     * @param ClassReflection $class
+     * @return string
+     */
+    public function getDeclarationLine(ClassReflection $class)
     {
-        $usesNames = $this->getUseArray($r);
+        $usesNames = $this->getUseArray($class);
 
         $declaration = '';
-        if ($r->isAbstract() && !$r->isInterface() && !$r->isTrait()) {
+        if ($class->isAbstract() && !$class->isInterface() && !$class->isTrait()) {
             $declaration .= 'abstract ';
         }
-        if ($r->isFinal()) {
+        if ($class->isFinal()) {
             $declaration .= 'final ';
         }
-        if ($r->isInterface()) {
+        if ($class->isInterface()) {
             $declaration .= 'interface ';
-        } elseif ($r->isTrait()) {
+        } elseif ($class->isTrait()) {
             $declaration .= 'trait ';
         } else {
             $declaration .= 'class ';
         }
-        $declaration .= $r->getShortName();
+        $declaration .= $class->getShortName();
         $parentName = false;
-        if ($parent = $r->getParentClass()) {
-            $parentName = $this->getClassNameInContext($parent, $r->getNamespaceName(), $usesNames);
+        if ($parent = $class->getParentClass()) {
+            $parentName = $this->getClassNameInContext($parent, $class->getNamespaceName(), $usesNames);
         }
         if ($parentName) {
             $declaration .= " extends {$parentName}";
         }
-        $interfaces = array_diff($r->getInterfaceNames(), $parent ? $parent->getInterfaceNames() : array());
+        $interfaces = array_diff($class->getInterfaceNames(), $parent ? $parent->getInterfaceNames() : array());
         if (count($interfaces)) {
             foreach ($interfaces as $interface) {
                 $iReflection = new ClassReflection($interface);
                 $interfaces  = array_diff($interfaces, $iReflection->getInterfaceNames());
             }
-            $declaration .= $r->isInterface() ? ' extends ' : ' implements ';
-            $declaration .= implode(', ', array_map(function($interface) use ($usesNames, $r) {
+            $declaration .= $class->isInterface() ? ' extends ' : ' implements ';
+            $declaration .= implode(', ', array_map(function($interface) use ($usesNames, $class) {
                 $iReflection = new ClassReflection($interface);
-                return $this->getClassNameInContext($iReflection, $r->getNamespaceName(), $usesNames);
+                return $this->getClassNameInContext($iReflection, $class->getNamespaceName(), $usesNames);
             }, $interfaces));
         }
 

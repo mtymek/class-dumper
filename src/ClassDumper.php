@@ -11,15 +11,29 @@ class ClassDumper
      */
     private $codeGenerator;
 
+    /**
+     * @var array
+     */
     private $cache;
 
+    /**
+     * @var array
+     */
     private $cachedClasses;
 
+    /**
+     * Class constructor
+     */
     public function __construct()
     {
         $this->codeGenerator = new CodeGenerator();
     }
 
+    /**
+     * Returns class' code inside namespace
+     *
+     * @param ClassReflection $class
+     */
     private function dumpClass(ClassReflection $class)
     {
         if (array_search($class->getName(), $this->cachedClasses) !== false) {
@@ -56,6 +70,12 @@ class ClassDumper
         $this->cachedClasses[] = $class->getName();
     }
 
+    /**
+     * Generates merged code for specified classes
+     *
+     * @param array $classes
+     * @return string
+     */
     public function dump(array $classes)
     {
         $this->cache = [];
