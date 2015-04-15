@@ -16,6 +16,7 @@
             "email": "mtymek@gmail.com"
         }
     ],
+    "bin": ["bin/dump-classes.php"],
     "autoload": {
         "psr-4": {
             "ClassDumper\\": "src"
