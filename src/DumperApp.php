@@ -2,6 +2,7 @@
 
 namespace ClassDumper;
 
+use ClassDumper\Exception\RuntimeException;
 use Zend\Console\Adapter\AdapterInterface;
 use Zend\Console\Console;
 use ZF\Console\Application;
@@ -29,7 +30,19 @@ class DumperApp extends Application
 
         $console->writeLine("Generating class cache from $configFile into $outputFile");
 
+        if (!file_exists($configFile)) {
+            throw new RuntimeException("Configuration file does not exist: $configFile");
+        }
+
         $classes = include $configFile;
+
+        if (!is_array($classes)) {
+            throw new RuntimeException("Configuration file does not contain array of class names");
+        }
+
+        if (!file_exists(dirname($outputFile))) {
+            mkdir(dirname($outputFile), 0777, true);
+        }
 
         $dumper = new ClassDumper();
         $cache = $dumper->dump($classes);
