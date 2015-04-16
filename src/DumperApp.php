@@ -17,6 +17,9 @@ class DumperApp extends Application
             'handler' => [$this, 'generateDump'],
         ]];
         parent::__construct('Cache dumper', 1.0, $routes, Console::getInstance());
+        $this->removeRoute('autocomplete');
+        $this->removeRoute('help');
+        $this->removeRoute('version');
     }
 
     public function generateDump(Route $route, AdapterInterface $console)
