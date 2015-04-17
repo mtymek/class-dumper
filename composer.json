@@ -7,7 +7,8 @@
         "zfcampus/zf-console": "~1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.6"
+        "phpunit/phpunit": "~4.6",
+        "squizlabs/php_codesniffer": "2.*"
     },
     "license": "BSD-2-Clause",
     "authors": [

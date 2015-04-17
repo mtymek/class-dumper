@@ -1,4 +1,11 @@
 <?php
+/**
+ * Class Dumper
+ *
+ * @link      https://github.com/mtymek/class-dumper
+ * @copyright Copyright (c) 2015 Mateusz Tymek
+ * @license   BSD 2-Clause
+ */
 
 namespace ClassDumper;
 
@@ -91,7 +98,7 @@ class CodeGenerator
                 $interfaces  = array_diff($interfaces, $iReflection->getInterfaceNames());
             }
             $declaration .= $class->isInterface() ? ' extends ' : ' implements ';
-            $declaration .= implode(', ', array_map(function($interface) use ($usesNames, $class) {
+            $declaration .= implode(', ', array_map(function ($interface) use ($usesNames, $class) {
                 $iReflection = new ClassReflection($interface);
                 return $this->getClassNameInContext($iReflection, $class->getNamespaceName(), $usesNames);
             }, $interfaces));
