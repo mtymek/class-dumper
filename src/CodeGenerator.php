@@ -98,7 +98,7 @@ class CodeGenerator
                 $interfaces  = array_diff($interfaces, $iReflection->getInterfaceNames());
             }
             $declaration .= $class->isInterface() ? ' extends ' : ' implements ';
-            $declaration .= implode(', ', array_map(function ($interface) use ($usesNames, $class) {
+            $declaration .= implode(', ', array_map(function($interface) use ($usesNames, $class) {
                 $iReflection = new ClassReflection($interface);
                 return $this->getClassNameInContext($iReflection, $class->getNamespaceName(), $usesNames);
             }, $interfaces));
