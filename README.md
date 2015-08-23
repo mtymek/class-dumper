@@ -1,6 +1,8 @@
 Class Dumper
 ============
 
+**Creates single file PHP containing multiple classes, to speed up application bootstrap.**
+
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/mtymek/class-dumper/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/mtymek/class-dumper/?branch=master)
 [![Build Status](https://scrutinizer-ci.com/g/mtymek/class-dumper/badges/build.png?b=master)](https://scrutinizer-ci.com/g/mtymek/class-dumper/build-status/master)
 [![Code Coverage](https://scrutinizer-ci.com/g/mtymek/class-dumper/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/mtymek/class-dumper/?branch=master)
@@ -8,10 +10,64 @@ Class Dumper
 [![Total Downloads](https://poser.pugx.org/mtymek/class-dumper/downloads)](https://packagist.org/packages/mtymek/class-dumper)
 [![License](https://poser.pugx.org/mtymek/class-dumper/license)](https://packagist.org/packages/mtymek/class-dumper)
 
-Creates single file PHP containing multiple classes, to speed up application bootstrap.
-
 Usage
 -----
+
+### Commandline script
+
+First, create configuration file that lists all files you want to merge. You don't need 
+to worry about class order, nor about adding required interfaces or parent classes - they 
+will be added automatically to merged file. 
+
+Config file is simple PHP file, returning array of class names:
+ 
+```php
+// config/classes-to-cache.php
+return [
+    // ZF2 classes
+    Zend\Mvc\Application::class,
+    Zend\Mvc\ApplicationInterface::class,
+    Zend\EventManager\EventsCapableInterface::class,
+   
+    // custom classes
+    Foo\Application::class,
+    Foo\Listener\Auth::class    
+]
+```
+ 
+Next, use `dump-classes.php` script to generate cached file: 
+
+```bash
+php ./vendor/bin/dump-classes.php config/classes-to-cache.php data/cache/classes.php.cache
+```
+
+When class cache is generated, you can include it in your application entry point: 
+
+```php
+// index.php
+include 'vendor/autoload.php';
+include 'data/cache/classes.php.cache';
+```
+
+You can automate generation using `composer` by adding post-install and post-update hooks
+to `composer.json` file:
+
+```json
+{
+    "scripts": {
+        "post-install-cmd": [
+            "php ./vendor/bin/dump-classes.php config/classes-to-cache.php data/cache/classes.php.cache-raw",
+        ],
+        "post-update-cmd": [
+            "php ./vendor/bin/dump-classes.php config/classes-to-cache.php data/cache/classes.php.cache-raw",
+        ]
+    }
+}
+```
+
+### PHP
+
+Alternatively, cached class file can be generated in your PHP script:
 
 ```php
 $dumper = new ClassDumper();
@@ -28,4 +84,3 @@ TODO
 * throw exception when class does not exist
 * strip whitespace
 * fix `__DIR__` constants
-* console tool
