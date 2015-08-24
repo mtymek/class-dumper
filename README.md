@@ -78,9 +78,19 @@ $cache = $dumper->dump([
 file_put_contents('data/cache/class_cache', "<?php\n" . $cache);
 ```
 
+Limitations
+-----------
+
+Not every class can be cached using `Class Dumper`. 
+
+* class dump will end up in different directory than merged classes. Classes using constants 
+like `__DIR__`or `__FILE__` will likely not work correctly.
+* when using with "--strip" options, all comments - including annotations - will be stripped 
+out. This will prevent annotation parser from working, if used on cached classes.
+
 TODO
 ----
 
 * throw exception when class does not exist
-* strip whitespace
+* warn if class contains `__DIR__` or `__FILE__` constants
 * fix `__DIR__` constants
