@@ -85,9 +85,10 @@ class ClassDumper
      * Generates merged code for specified classes
      *
      * @param array $classes
+     * @param bool $minify
      * @return string
      */
-    public function dump(array $classes)
+    public function dump(array $classes, $minify = false)
     {
         $this->cache = [];
         $this->cachedClasses = [];
@@ -97,6 +98,18 @@ class ClassDumper
             $this->dumpClass($class);
         }
 
-        return implode("\n", $this->cache);
+        $code = implode("\n", $this->cache);
+
+        if (!$minify) {
+            return $code;
+        }
+
+        $tempFile = tempnam(sys_get_temp_dir(), 'class-dumper');
+        file_put_contents($tempFile, "<?php\n" . $code);
+        $stripped = php_strip_whitespace($tempFile);
+        unlink($tempFile);
+
+        // strip "<?php
+        return trim(substr($stripped, strlen("<?php\n") - 1));
     }
 }

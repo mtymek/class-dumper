@@ -80,6 +80,19 @@ class Customer implements CustomerInterface, UserInterface
 ', $cache);
     }
 
+    public function testDumpCreatesMergedAndMinifiedClasses()
+    {
+        $dumper = new ClassDumper();
+        $classes = [
+            UserInterface::class,
+            Admin::class,
+            ProductInterface::class,
+            Customer::class,
+        ];
+        $cache = $dumper->dump($classes, true);
+        $this->assertEquals('namespace UserLib { interface UserInterface { } } namespace UserLib\Admin { use UserLib\UserInterface; class Admin implements UserInterface { } } namespace UserLib\Product { interface ProductInterface { public function getName(); } } namespace UserLib\Customer { use UserLib\Admin\Admin; use UserLib\Product\ProductInterface as Product; interface CustomerInterface { public function buy(Product $product); public function sendMessageToAdmin(Admin $admin); } } namespace UserLib\Customer { use UserLib\Admin\Admin; use UserLib\UserInterface; use UserLib\Product\ProductInterface; class Customer implements CustomerInterface, UserInterface { public function buy(ProductInterface $product) { } public function sendMessageToAdmin(Admin $admin) { } } }', $cache);
+    }
+
     public function testDumpIncludesRequiredInterfacesAndParentClasses()
     {
         $dumper = new ClassDumper();
