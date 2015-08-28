@@ -78,6 +78,22 @@ $cache = $dumper->dump([
 file_put_contents('data/cache/class_cache', "<?php\n" . $cache);
 ```
 
+### Minifing merged file
+
+ClassDumper can reduce size of emitted file by stripping all whitespace and comments.
+
+It can be triggered from commandline by adding `--strip` switch:
+
+ ```bash
+php ./vendor/bin/dump-classes.php config/classes-to-cache.php classes.php.cache --strip
+```
+ 
+Using in PHP:
+ 
+```php
+$cache = $dumper->dump([ /* ... */ ], true);
+```
+
 Limitations
 -----------
 
