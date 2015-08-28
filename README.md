@@ -109,4 +109,5 @@ TODO
 
 * throw exception when class does not exist
 * warn if class contains `__DIR__` or `__FILE__` constants
+* output/log statistics
 * fix `__DIR__` constants
