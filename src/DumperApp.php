@@ -20,7 +20,7 @@ class DumperApp extends Application
     public function __construct()
     {
         $routes = [[
-            'name' => '<config> <output_file>',
+            'name' => '<config> <output_file> [--strip]',
             'short_description' => "Generate class cache based on <config> file into <output_file>.",
             'handler' => [$this, 'generateDump'],
         ]];
@@ -34,6 +34,7 @@ class DumperApp extends Application
     {
         $configFile = $route->getMatchedParam('config');
         $outputFile = $route->getMatchedParam('output_file');
+        $strip = (bool)$route->getMatchedParam('strip');
 
         $console->writeLine("Generating class cache from $configFile into $outputFile");
 
@@ -52,7 +53,7 @@ class DumperApp extends Application
         }
 
         $dumper = new ClassDumper();
-        $cache = $dumper->dump($classes);
+        $cache = $dumper->dump($classes, $strip);
 
         file_put_contents($outputFile, "<?php\n" . $cache);
     }
