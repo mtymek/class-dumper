@@ -94,6 +94,22 @@ Using in PHP:
 $cache = $dumper->dump([ /* ... */ ], true);
 ```
 
+### Generating config files
+
+You can easily generate configuration file based on currently included files in your application.
+In order to do it, add following lines after your application bootstrap (ideally somewhere before 
+routing starts):
+
+```php
+$configGenerator = new \ClassDumper\ConfigGenerator;
+$configGenerator->dumpIncludedClasses('config.php');
+```
+
+This will save list of all included classes into `config.php` file. You may want to edit configuration 
+file manually before using it in your application - see "Limitations" section below.
+After creating the config file, remove above lines.
+
+
 Limitations
 -----------
 
